@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 )
@@ -8,6 +9,10 @@ import (
 func main() {
 	// Use the http.NewServeMux() function to initialize a new servmux, then
 	// register the home function as the handler for the "/" URL pattern.
+
+	addr := flag.String("addr", ":4000", "HTTP network address")
+	flag.Parse()
+
 	mux := http.NewServeMux()
 
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
@@ -23,7 +28,7 @@ func main() {
 	// and the servemux we just created. If http.ListenServe() returns an error
 	// we use the log.Fatal() function to log the error message and exit. Note
 	// that any error returned by http.ListenAndServe() is always non-nil
-	log.Print("starting server on :4000")
-	err := http.ListenAndServe(":4000", mux)
+	log.Printf("starting server on %s", *addr)
+	err := http.ListenAndServe(*addr, mux)
 	log.Fatal(err)
 }
